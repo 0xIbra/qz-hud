@@ -1,3 +1,7 @@
+var bankAmount = 0;
+var cashAmount = 0;
+var changing = false;
+
 (() => {
     $(".marchas").fadeOut();
     $(".kmnumero").fadeOut();
@@ -14,6 +18,83 @@
 
 $(function () {
     window.addEventListener("message", function (event) {
+
+        if (event.data.action === 'updatemoney') {
+            let type = event.data.type;
+            if (type === 'crypto') {
+                return;
+            }
+
+            let isMinus = event.data.minus;
+
+            let classToToggle = 'plus';
+            if (isMinus) {
+                classToToggle = 'minus';
+            }
+
+            if (type === 'cash') {
+                $('#cash').addClass(classToToggle);
+                setTimeout(() => $('#cash').removeClass(classToToggle), 2000);
+            } else if (type === 'bank') {
+                $('#bank').addClass(classToToggle);
+                setTimeout(() => $('#bank').removeClass(classToToggle), 2000);
+            }
+
+            let amount = event.data.amount;
+            let selector = '#bank-amount-val';
+
+            if (!isMinus) {
+                amount = bankAmount + Math.round(amount);
+            } else {
+                amount = bankAmount - Math.round(amount);
+            }
+            if (event.data.type === 'cash') {
+                selector = '#cash-amount-val';
+                if (!isMinus) {
+                    amount = cashAmount + Math.round(event.data.amount);
+                } else {
+                    amount = cashAmount - Math.round(event.data.amount);
+                }
+            }
+
+            let currentAmount = bankAmount;
+            if (event.data.type === 'cash') {
+                currentAmount = cashAmount;
+            }
+
+            if (changing === false) {
+                changing = true;
+                $(selector).prop("Counter", currentAmount).animate({
+                    Counter: amount
+                },
+                {
+                    duration: 1500,
+                    easing: 'swing',
+                    step: function (now) {
+                        $(this).text(Math.round(now));
+                    }
+                });
+
+                setTimeout(() => changing = false, 2500);
+            }
+
+            //
+            if (type === 'bank') {
+                if (!isMinus) {
+                    bankAmount += Math.round(event.data.amount);
+                } else {
+                    bankAmount -= Math.round(event.data.amount);
+                }
+            } else if (type === 'cash') {
+                if (!isMinus) {
+                    cashAmount += Math.round(event.data.amount);
+                } else {
+                    cashAmount -= Math.round(event.data.amount);
+                }
+            }
+
+            return;
+        }
 
         if (event.data.pauseMenu == false) {
             var selector = document.querySelector("#todo")
@@ -41,6 +122,12 @@ $(function () {
 
             var id = event.data.id;
             $("#id-percent").html("" + id);
+
+            bankAmount = event.data.bankAmount;
+            $("#bank-amount-val").text(Math.round(bankAmount) + "");
+
+            cashAmount = event.data.cashAmount;
+            $("#cash-amount-val").text(Math.round(cashAmount) + "");
 
         } else {
             var selector = document.querySelector("#todo")
@@ -286,6 +373,14 @@ $(function () {
                 $(".fuel-container").fadeOut();
                 $("#gaso-icon").fadeOut();
                 $(".porcentaje").fadeOut();
+            }
+
+            if (v.bankAmount != null && v.cashAmount != null) {
+                bankAmount = Math.round(v.bankAmount);
+                cashAmount = Math.round(v.cashAmount);
+
+                $("#bank-amount-val").text(bankAmount);
+                $("#cash-amount-val").text(cashAmount);
             }
 
             if (Math.round(v.speed) === 0) {

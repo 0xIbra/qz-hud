@@ -5,9 +5,23 @@ local config = Config
 local speedMultiplier = config.UseMPH and 2.23694 or 3.6
 local seatbeltIsOn = false
 local hasPlayerLoaded = false
+local cashAmount = 0
+local bankAmount = 0
 
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function(player)
+    Wait(2000)
+    -- local hudSettings = GetResourceKvpString('hudSettings')
+    -- if hudSettings then loadSettings(json.decode(hudSettings)) end
+    PlayerData = QBCore.Functions.GetPlayerData()
     hasPlayerLoaded = true
+end)
+
+RegisterNetEvent("QBCore:Client:OnPlayerUnload", function()
+    PlayerData = {}
+end)
+
+RegisterNetEvent("QBCore:Player:SetPlayerData", function(val)
+    PlayerData = val
 end)
 
 RegisterNetEvent('hud:client:UpdateNeeds')
@@ -74,6 +88,18 @@ Citizen.CreateThread(function()
             vehicleLight = 'off'
         end
 
+        local cashAmount = 0
+        local bankAmount = 0
+
+        if PlayerData.money then
+            if PlayerData.money.cash then
+                cashAmount = PlayerData.money.cash
+            end
+            if PlayerData.money.bank then
+                bankAmount = PlayerData.money.bank
+            end
+        end
+
         SendNUIMessage({
             pauseMenu = PauseMenuState();
             armour = GetPedArmour(PlayerPedId());
@@ -98,6 +124,8 @@ Citizen.CreateThread(function()
             luceslargas = highbeamsOn;
             locked = GetVehicleDoorLockStatus(vehicle);
             damage = damage;
+            cashAmount = cashAmount;
+            bankAmount = bankAmount;
         })
 
 
@@ -250,6 +278,21 @@ CreateThread(function()
         end
         Wait(effectInterval)
     end
+end)
+
+--------------------------------- MONEY --------------------------------------
+
+RegisterNetEvent('hud:client:OnMoneyChange', function(type, amount, isMinus)
+    cashAmount = PlayerData.money.cash
+    bankAmount = PlayerData.money.bank
+    SendNUIMessage({
+        action = 'updatemoney',
+        cash = cashAmount,
+        bank = bankAmount,
+        amount = amount,
+        minus = isMinus,
+        type = type
+    })
 end)
 
 ---------------------------------STRESS---------------------------------
