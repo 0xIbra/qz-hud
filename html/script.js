@@ -2,6 +2,10 @@ var bankAmount = 0;
 var cashAmount = 0;
 var changing = false;
 
+function numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 (() => {
     $(".marchas").fadeOut();
     $(".kmnumero").fadeOut();
@@ -71,7 +75,8 @@ $(function () {
                     duration: 1500,
                     easing: 'swing',
                     step: function (now) {
-                        $(this).text(Math.round(now));
+                        now = numberWithSpaces(Math.round(now))
+                        $(this).text(now);
                     }
                 });
 
@@ -379,8 +384,8 @@ $(function () {
                 bankAmount = Math.round(v.bankAmount);
                 cashAmount = Math.round(v.cashAmount);
 
-                $("#bank-amount-val").text(bankAmount);
-                $("#cash-amount-val").text(cashAmount);
+                $("#bank-amount-val").text(numberWithSpaces(bankAmount));
+                $("#cash-amount-val").text(numberWithSpaces(cashAmount));
             }
 
             if (Math.round(v.speed) === 0) {
