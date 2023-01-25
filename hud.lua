@@ -90,6 +90,7 @@ Citizen.CreateThread(function()
 
         local cashAmount = 0
         local bankAmount = 0
+        local blackmoneyAmount = 0
 
         if PlayerData.money then
             if PlayerData.money.cash then
@@ -97,6 +98,9 @@ Citizen.CreateThread(function()
             end
             if PlayerData.money.bank then
                 bankAmount = PlayerData.money.bank
+            end
+            if PlayerData.money.blackmoney then
+                blackmoneyAmount = PlayerData.money.blackmoney
             end
         end
 
@@ -126,6 +130,7 @@ Citizen.CreateThread(function()
             damage = damage;
             cashAmount = cashAmount;
             bankAmount = bankAmount;
+            blackmoneyAmount = blackmoneyAmount;
         })
 
 
@@ -176,119 +181,122 @@ end)
 
 ---------------------------------STRESS---------------------------------
 
-RegisterNetEvent('hud:client:UpdateStress', function(newStress)
-    stress = newStress
-end)
+-- RegisterNetEvent('hud:client:UpdateStress', function(newStress)
+--     stress = newStress
+-- end)
 
-CreateThread(function()
-    while true do
-        if LocalPlayer.state.isLoggedIn then
-            local ped = PlayerPedId()
-            if IsPedInAnyVehicle(ped, false) then
-                local speed = GetEntitySpeed(GetVehiclePedIsIn(ped, false)) * speedMultiplier
-                local stressSpeed = seatbeltOn and config.MinimumSpeed or config.MinimumSpeedUnbuckled
-                if speed >= stressSpeed then
-                    TriggerServerEvent('hud:server:GainStress', math.random(1, 3))
-                end
-            end
-        end
-        Wait(10000)
-    end
-end)
+-- CreateThread(function()
+--     while true do
+--         if LocalPlayer.state.isLoggedIn then
+--             local ped = PlayerPedId()
+--             if IsPedInAnyVehicle(ped, false) then
+--                 local speed = GetEntitySpeed(GetVehiclePedIsIn(ped, false)) * speedMultiplier
+--                 local stressSpeed = seatbeltOn and config.MinimumSpeed or config.MinimumSpeedUnbuckled
+--                 if speed >= stressSpeed then
+--                     TriggerServerEvent('hud:server:GainStress', math.random(1, 3))
+--                 end
+--             end
+--         end
+--         Wait(10000)
+--     end
+-- end)
 
-local function IsWhitelistedWeaponStress(weapon)
-    if weapon then
-        for _, v in pairs(config.WhitelistedWeaponStress) do
-            if weapon == v then
-                return true
-            end
-        end
-    end
-    return false
-end
+-- local function IsWhitelistedWeaponStress(weapon)
+--     if weapon then
+--         for _, v in pairs(config.WhitelistedWeaponStress) do
+--             if weapon == v then
+--                 return true
+--             end
+--         end
+--     end
+--     return false
+-- end
 
-CreateThread(function()
-    while true do
-        if LocalPlayer.state.isLoggedIn then
-            local ped = PlayerPedId()
-            local weapon = GetSelectedPedWeapon(ped)
-            if weapon ~= `WEAPON_UNARMED` then
-                if IsPedShooting(ped) and not IsWhitelistedWeaponStress(weapon) then
-                    if math.random() < config.StressChance then
-                        TriggerServerEvent('hud:server:GainStress', math.random(1, 3))
-                    end
-                end
-            else
-                Wait(1000)
-            end
-        end
-        Wait(8)
-    end
-end)
+-- CreateThread(function()
+--     while true do
+--         if LocalPlayer.state.isLoggedIn then
+--             local ped = PlayerPedId()
+--             local weapon = GetSelectedPedWeapon(ped)
+--             if weapon ~= `WEAPON_UNARMED` then
+--                 if IsPedShooting(ped) and not IsWhitelistedWeaponStress(weapon) then
+--                     if math.random() < config.StressChance then
+--                         TriggerServerEvent('hud:server:GainStress', math.random(1, 3))
+--                     end
+--                 end
+--             else
+--                 Wait(1000)
+--             end
+--         end
+--         Wait(8)
+--     end
+-- end)
 
-local function GetBlurIntensity(stresslevel)
-    for _, v in pairs(config.Intensity['blur']) do
-        if stresslevel >= v.min and stresslevel <= v.max then
-            return v.intensity
-        end
-    end
-    return 1500
-end
+-- local function GetBlurIntensity(stresslevel)
+--     for _, v in pairs(config.Intensity['blur']) do
+--         if stresslevel >= v.min and stresslevel <= v.max then
+--             return v.intensity
+--         end
+--     end
+--     return 1500
+-- end
 
-local function GetEffectInterval(stresslevel)
-    for _, v in pairs(config.EffectInterval) do
-        if stresslevel >= v.min and stresslevel <= v.max then
-            return v.timeout
-        end
-    end
-    return 60000
-end
+-- local function GetEffectInterval(stresslevel)
+--     for _, v in pairs(config.EffectInterval) do
+--         if stresslevel >= v.min and stresslevel <= v.max then
+--             return v.timeout
+--         end
+--     end
+--     return 60000
+-- end
 
-CreateThread(function()
-    while true do
-        local ped = PlayerPedId()
-        local effectInterval = GetEffectInterval(stress)
-        if stress >= 100 then
-            local BlurIntensity = GetBlurIntensity(stress)
-            local FallRepeat = math.random(2, 4)
-            local RagdollTimeout = FallRepeat * 1750
-            TriggerScreenblurFadeIn(1000.0)
-            Wait(BlurIntensity)
-            TriggerScreenblurFadeOut(1000.0)
+-- CreateThread(function()
+--     while true do
+--         local ped = PlayerPedId()
+--         local effectInterval = GetEffectInterval(stress)
+--         if stress >= 100 then
+--             local BlurIntensity = GetBlurIntensity(stress)
+--             local FallRepeat = math.random(2, 4)
+--             local RagdollTimeout = FallRepeat * 1750
+--             TriggerScreenblurFadeIn(1000.0)
+--             Wait(BlurIntensity)
+--             TriggerScreenblurFadeOut(1000.0)
 
-            if not IsPedRagdoll(ped) and IsPedOnFoot(ped) and not IsPedSwimming(ped) then
-                SetPedToRagdollWithFall(ped, RagdollTimeout, RagdollTimeout, 1, GetEntityForwardVector(ped), 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-            end
+--             if not IsPedRagdoll(ped) and IsPedOnFoot(ped) and not IsPedSwimming(ped) then
+--                 SetPedToRagdollWithFall(ped, RagdollTimeout, RagdollTimeout, 1, GetEntityForwardVector(ped), 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+--             end
 
-            Wait(1000)
-            for _ = 1, FallRepeat, 1 do
-                Wait(750)
-                DoScreenFadeOut(200)
-                Wait(1000)
-                DoScreenFadeIn(200)
-                TriggerScreenblurFadeIn(1000.0)
-                Wait(BlurIntensity)
-                TriggerScreenblurFadeOut(1000.0)
-            end
-        elseif stress >= config.MinimumStress then
-            local BlurIntensity = GetBlurIntensity(stress)
-            TriggerScreenblurFadeIn(1000.0)
-            Wait(BlurIntensity)
-            TriggerScreenblurFadeOut(1000.0)
-        end
-        Wait(effectInterval)
-    end
-end)
+--             Wait(1000)
+--             for _ = 1, FallRepeat, 1 do
+--                 Wait(750)
+--                 DoScreenFadeOut(200)
+--                 Wait(1000)
+--                 DoScreenFadeIn(200)
+--                 TriggerScreenblurFadeIn(1000.0)
+--                 Wait(BlurIntensity)
+--                 TriggerScreenblurFadeOut(1000.0)
+--             end
+--         elseif stress >= config.MinimumStress then
+--             local BlurIntensity = GetBlurIntensity(stress)
+--             TriggerScreenblurFadeIn(1000.0)
+--             Wait(BlurIntensity)
+--             TriggerScreenblurFadeOut(1000.0)
+--         end
+--         Wait(effectInterval)
+--     end
+-- end)
 
 --------------------------------- MONEY --------------------------------------
 
 RegisterNetEvent('hud:client:OnMoneyChange', function(type, amount, isMinus)
-    cashAmount = PlayerData.money.cash
-    bankAmount = PlayerData.money.bank
+    local cashAmount = PlayerData.money.cash
+    local bankAmount = PlayerData.money.bank
+    local blackmoneyAmount = PlayerData.money.blackmoney
+
     SendNUIMessage({
         action = 'updatemoney',
         cash = cashAmount,
         bank = bankAmount,
+        blackmoney = blackmoneyAmount,
         amount = amount,
         minus = isMinus,
         type = type

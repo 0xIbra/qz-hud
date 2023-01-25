@@ -1,5 +1,6 @@
 var bankAmount = 0;
 var cashAmount = 0;
+var blackmoneyAmount = 0;
 var changing = false;
 
 function numberWithSpaces(x) {
@@ -42,6 +43,9 @@ $(function () {
             } else if (type === 'bank') {
                 $('#bank').addClass(classToToggle);
                 setTimeout(() => $('#bank').removeClass(classToToggle), 2000);
+            } else if (type === 'blackmoney') {
+                $('#blackmoney').addClass(classToToggle);
+                setTimeout(() => $('#blackmoney').removeClass(classToToggle), 2000);
             }
 
             let amount = event.data.amount;
@@ -59,11 +63,20 @@ $(function () {
                 } else {
                     amount = cashAmount - Math.round(event.data.amount);
                 }
+            } else if (event.data.type === 'blackmoney') {
+                selector = '#blackmoney-val';
+                if (!isMinus) {
+                    amount = blackmoneyAmount + Math.round(event.data.amount);
+                } else {
+                    amount = blackmoneyAmount - Math.round(event.data.amount);
+                }
             }
 
             let currentAmount = bankAmount;
             if (event.data.type === 'cash') {
                 currentAmount = cashAmount;
+            } else if (event.data.type === 'blackmoney') {
+                currentAmount = blackmoneyAmount;
             }
 
             if (changing === false) {
@@ -95,6 +108,12 @@ $(function () {
                     cashAmount += Math.round(event.data.amount);
                 } else {
                     cashAmount -= Math.round(event.data.amount);
+                }
+            } else if (type === 'blackmoney') {
+                if (!isMinus) {
+                    blackmoneyAmount += Math.round(event.data.amount);
+                } else {
+                    blackmoneyAmount -= Math.round(event.data.amount);
                 }
             }
 
@@ -386,6 +405,22 @@ $(function () {
 
                 $("#bank-amount-val").text(numberWithSpaces(bankAmount));
                 $("#cash-amount-val").text(numberWithSpaces(cashAmount));
+            }
+
+            if (v.blackmoneyAmount != null) {
+                let blackmoney = Math.round(v.blackmoneyAmount);
+                blackmoneyAmount = blackmoney;
+
+                if (blackmoney > 0) {
+                    $("#blackmoney-val").text(numberWithSpaces(blackmoney))
+                    $("#blackmoney").fadeIn()
+                    $("#blackmoney").addClass('active')
+                } else {
+                    $("#blackmoney-val").text('0');
+                    $("#blackmoney").fadeOut();
+                    $("#blackmoney").removeClass('active')
+
+                }
             }
 
             if (Math.round(v.speed) === 0) {
