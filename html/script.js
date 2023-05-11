@@ -161,7 +161,13 @@ $(function () {
         if (event.data.estoyencoche == true) {
 
             var selector2 = document.querySelector("#ui")
-            selector2.style = "opacity:1.0; left:17%; margin-top:1vh; bottom:0%; display:block;bottom:2%;overflow: hidden;"
+            let left = "17%";
+
+            if (window.screen.width > 2500) {
+                left = "10px";
+            }
+
+            selector2.style = "opacity:1.0; left:"+ left +"; margin-top:1vh; bottom:0%; display:block;bottom:2%;overflow: hidden;"
 
             //var selectorid = document.querySelector("#others")
             //selectorid.style = "opacity:0.0;"
