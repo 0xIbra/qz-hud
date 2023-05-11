@@ -105,32 +105,32 @@ Citizen.CreateThread(function()
         end
 
         SendNUIMessage({
-            pauseMenu = PauseMenuState();
-            armour = GetPedArmour(PlayerPedId());
-            health = GetEntityHealth(PlayerPedId())-100;
-            food = hunger;
-            thirst = thirst;
-            stress = stress;
-            estoyencoche = IsPedSittingInAnyVehicle(ped);
-            id = GetPlayerServerId(PlayerId());
-            isinthewater = IsEntityInWater(ped);
-            isinthewaterswiming = IsPedSwimming(ped);
-            oxigenoagua = GetPlayerUnderwaterTimeRemaining(PlayerId())*10;
-            oxigeno = 100-GetPlayerSprintStaminaRemaining(PlayerId());
+            pauseMenu = PauseMenuState(),
+            armour = GetPedArmour(PlayerPedId()),
+            health = GetEntityHealth(PlayerPedId())-100,
+            food = hunger,
+            thirst = thirst,
+            stress = stress,
+            estoyencoche = IsPedSittingInAnyVehicle(ped),
+            id = GetPlayerServerId(PlayerId()),
+            isinthewater = IsEntityInWater(ped),
+            isinthewaterswiming = IsPedSwimming(ped),
+            oxigenoagua = GetPlayerUnderwaterTimeRemaining(PlayerId())*10,
+            oxigeno = 100-GetPlayerSprintStaminaRemaining(PlayerId()),
 
-            type = 'carhud:update';
-            isInVehicle = IsPedInAnyVehicle;
-            speed = speedLevel;
-            fuel = fuelLevel;
-            gear = gearLevel;
-            vidacoche = healthCar;
-            luces = lightsOn;
-            luceslargas = highbeamsOn;
-            locked = GetVehicleDoorLockStatus(vehicle);
-            damage = damage;
-            cashAmount = cashAmount;
-            bankAmount = bankAmount;
-            blackmoneyAmount = blackmoneyAmount;
+            type = 'carhud:update',
+            isInVehicle = IsPedInAnyVehicle,
+            speed = speedLevel,
+            fuel = fuelLevel,
+            gear = gearLevel,
+            vidacoche = healthCar,
+            luces = lightsOn,
+            luceslargas = highbeamsOn,
+            locked = GetVehicleDoorLockStatus(vehicle),
+            damage = damage,
+            cashAmount = cashAmount,
+            bankAmount = bankAmount,
+            blackmoneyAmount = blackmoneyAmount,
         })
 
 

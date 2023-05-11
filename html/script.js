@@ -24,6 +24,24 @@ function numberWithSpaces(x) {
 $(function () {
     window.addEventListener("message", function (event) {
 
+        if (event.data.jobLabel != null) {
+            $('#career-val').text(`${event.data.jobLabel}${event.data.jobGrade ? ' - ' + event.data.jobGrade : ''}`)
+        }
+
+        if (event.data.gangLabel != null) {
+            $("#gang-val").text(`${event.data.gangLabel}${event.data.gangGrade ? ' - ' + event.data.gangGrade : ''}`)
+            $("#gang").addClass("active")
+            if (event.data.isCyber === true) {
+                $("#gang-icon").addClass("fa-user-secret");
+                $("#gang-icon").removeClass("fa-users");
+            } else {
+                $("#gang-icon").removeClass("fa-user-secret");
+                $("#gang-icon").addClass("fa-users");
+            }
+        } else {
+            $("#gang").removeClass("active")
+        }
+
         if (event.data.action === 'updatemoney') {
             let type = event.data.type;
             if (type === 'crypto') {

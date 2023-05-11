@@ -53,8 +53,22 @@ body {
 }
 
 #finances > div {
-    width: 5.00vw !important;
+    width: 7.00vw !important;
     margin-right: 0 !important;
+}
+
+#finances #career-val {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 6.00vw;
+}
+
+#finances #gang-val {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 6.00vw;
 }
 
 #bank-amount-val, #cash-amount-val {
@@ -144,7 +158,7 @@ body {
     float: left;
 }
 
-.health, .armour,.food ,.thirst,.stress,.bank,.cash,.blackmoney {
+.health, .armour,.food ,.thirst,.stress,.bank,.cash,.blackmoney,.career,.gang {
     margin-right: 1.2vw;
     font-family: sans-serif;
     margin-top: .45vh;
@@ -155,13 +169,14 @@ body {
     font-size: 1vh;
     border-radius: .4vh;
     padding: 0.9vh 0.8vh;
+    text-overflow: ellipsis;
 }
 
-#blackmoney:not(.active) {
+#blackmoney:not(.active), #gang:not(.active) {
     display: none;
 }
 
-#blackmoney.active {
+#blackmoney.active, #gang.active {
     display: block !important;
     background-color: rgb(125, 56, 56) !important;
 }
